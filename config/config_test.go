@@ -16,10 +16,19 @@ var _ = Describe("Config", func() {
 
 			BeforeEach(func() {
 				os.Setenv("RUN_INTERVAL", "10")
+				os.Setenv("VCAP_SERVICES", `
+{
+  "p-mysql": [
+    {
+			"name": "my-mysql-db"
+    }
+  ]
+}`)
 			})
 
 			AfterEach(func() {
 				os.Unsetenv("RUN_INTERVAL")
+				os.Unsetenv("VCAP_SERVICES")
 			})
 
 			It("returns nil", func() {
@@ -41,6 +50,27 @@ var _ = Describe("Config", func() {
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("RUN_INTERVAL"))
 			})
+		})
+	})
+
+	Describe("Services", func() {
+		It("parses VCAP_SERVICES into structs", func() {
+			os.Setenv("VCAP_SERVICES", `
+{
+  "p-mysql": [
+    {
+			"name": "my-mysql-db"
+    }
+  ]
+}`)
+
+			config := configPkg.New()
+			Expect(config.Services).To(Equal([]configPkg.ServiceConfig{
+				configPkg.ServiceConfig{
+					Name: "my-mysql-db",
+					Type: "p-mysql",
+				},
+			}))
 		})
 	})
 })
