@@ -3,17 +3,22 @@ package config
 import (
 	"encoding/json"
 	"errors"
+	"flag"
+	"fmt"
 	"os"
 	"strconv"
 	"time"
 
+	"github.com/cloudfoundry-incubator/cf-lager"
 	"github.com/pivotal-golang/lager"
 )
 
 type Config struct {
 	Interval time.Duration
+	Port     int
 	Logger   lager.Logger
 	Services []ServiceConfig
+	setupErr error
 }
 
 type ServiceConfig struct {
@@ -29,11 +34,16 @@ func New() *Config {
 
 	cnf := &Config{}
 
-	cnf.Logger = lager.NewLogger("ServiceCanary")
+	cf_lager.AddFlags(flag.CommandLine)
+	flag.Parse()
+
+	cnf.Logger, _ = cf_lager.New("ServiceCanary")
 
 	// conversion errors are defered to Validate
 	runInterval, _ := strconv.Atoi(os.Getenv("RUN_INTERVAL"))
 	cnf.Interval = time.Duration(runInterval) * time.Second
+
+	cnf.Port, _ = strconv.Atoi(os.Getenv("PORT"))
 
 	cnf.Services = []ServiceConfig{}
 
@@ -41,7 +51,7 @@ func New() *Config {
 	servicesJson := []byte(os.Getenv("VCAP_SERVICES"))
 	var rawServices map[string][]map[string]interface{}
 	if err := json.Unmarshal(servicesJson, &rawServices); err != nil {
-		cnf.Logger.Error("Failed to Parse VCAP_SERVICES", err)
+		cnf.setupErr = fmt.Errorf("Failed to Parse VCAP_SERVICES: %s", err.Error())
 	} else {
 		for k, v := range rawServices {
 			serviceType := k
@@ -61,13 +71,26 @@ func New() *Config {
 }
 
 func (c Config) Validate() error {
+
+	errMsg := ""
+	if c.setupErr != nil {
+		errMsg += fmt.Sprintf("Failed to build config: %s\n", c.setupErr.Error())
+	}
+
 	if c.Interval == 0 {
-		return errors.New("RUN_INTERVAL cannot be zero")
+		errMsg += "RUN_INTERVAL was not present in environment\n"
+	}
+
+	if c.Port == 0 {
+		errMsg += "PORT was not present in environment\n"
 	}
 
 	if len(c.Services) == 0 {
-		return errors.New("Failed to parse any services from VCAP_SERVICES")
+		errMsg += "Failed to parse any services from VCAP_SERVICES\n"
 	}
 
+	if len(errMsg) > 0 {
+		return errors.New(errMsg)
+	}
 	return nil
 }

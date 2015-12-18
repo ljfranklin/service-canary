@@ -16,6 +16,7 @@ var _ = Describe("Config", func() {
 
 			BeforeEach(func() {
 				os.Setenv("RUN_INTERVAL", "10")
+				os.Setenv("PORT", "8081")
 				os.Setenv("VCAP_SERVICES", `
 {
   "p-mysql": [
@@ -28,6 +29,7 @@ var _ = Describe("Config", func() {
 
 			AfterEach(func() {
 				os.Unsetenv("RUN_INTERVAL")
+				os.Unsetenv("PORT")
 				os.Unsetenv("VCAP_SERVICES")
 			})
 
