@@ -4,7 +4,7 @@ package fakes
 import (
 	"sync"
 
-	"github.com/ljfranklin/service-canary/scheduler"
+	"github.com/ljfranklin/service-canary/runner"
 )
 
 type FakeRunner struct {
@@ -40,4 +40,4 @@ func (fake *FakeRunner) RunReturns(result1 error) {
 	}{result1}
 }
 
-var _ scheduler.Runner = new(FakeRunner)
+var _ runner.Runner = new(FakeRunner)

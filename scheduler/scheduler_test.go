@@ -4,8 +4,8 @@ import (
 	"time"
 
 	configPkg "github.com/ljfranklin/service-canary/config"
+	"github.com/ljfranklin/service-canary/runner/fakes"
 	schedulerPkg "github.com/ljfranklin/service-canary/scheduler"
-	"github.com/ljfranklin/service-canary/scheduler/fakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-golang/lager/lagertest"

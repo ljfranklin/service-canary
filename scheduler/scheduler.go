@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/ljfranklin/service-canary/config"
+	"github.com/ljfranklin/service-canary/runner"
 	"github.com/pivotal-golang/lager"
 )
 
@@ -14,18 +15,14 @@ type Scheduler interface {
 }
 
 type scheduler struct {
-	runner   Runner
+	runner   runner.Runner
 	interval time.Duration
 	logger   lager.Logger
 	stopChan chan bool
 	doneChan chan bool
 }
 
-type Runner interface {
-	Run() error
-}
-
-func New(runner Runner, config *config.Config) Scheduler {
+func New(runner runner.Runner, config *config.Config) Scheduler {
 	return &scheduler{
 		runner:   runner,
 		interval: config.Interval,
