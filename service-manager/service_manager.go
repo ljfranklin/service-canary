@@ -44,7 +44,7 @@ func (m *serviceManager) RunAllInBackground() error {
 		go func() {
 			err := service.Run()
 			if err != nil {
-				m.logger.Error(fmt.Sprintf("Failed to run %s service with err: %s", service.Name()), err)
+				m.logger.Error(fmt.Sprintf("Failed to run %s service", service.Name()), err)
 			}
 		}()
 	}
