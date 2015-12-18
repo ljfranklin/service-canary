@@ -17,9 +17,12 @@ type Config struct {
 func New() *Config {
 
 	cnf := &Config{}
+	// conversion errors are defered to Validate
 	runInterval, _ := strconv.Atoi(os.Getenv("RUN_INTERVAL"))
 
 	cnf.Interval = time.Duration(runInterval) * time.Second
+
+	cnf.Logger = lager.NewLogger("ServiceCanary")
 
 	return cnf
 }

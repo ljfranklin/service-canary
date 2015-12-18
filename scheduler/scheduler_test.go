@@ -3,10 +3,12 @@ package scheduler_test
 import (
 	"time"
 
+	configPkg "github.com/ljfranklin/service-canary/config"
 	"github.com/ljfranklin/service-canary/runner/fakes"
 	schedulerPkg "github.com/ljfranklin/service-canary/scheduler"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pivotal-golang/lager/lagertest"
 )
 
 var _ = Describe("Scheduler", func() {
@@ -15,9 +17,13 @@ var _ = Describe("Scheduler", func() {
 
 		It("calls the command at the given interval", func() {
 
+			config := &configPkg.Config{
+				Interval: 10 * time.Millisecond,
+				Logger:   lagertest.NewTestLogger("SchedulerTest"),
+			}
+
 			runner := &fakes.FakeRunner{}
-			interval := 10 * time.Millisecond
-			scheduler := schedulerPkg.New(runner, interval)
+			scheduler := schedulerPkg.New(runner, config)
 
 			err := scheduler.RunInBackground()
 			Expect(err).ToNot(HaveOccurred())

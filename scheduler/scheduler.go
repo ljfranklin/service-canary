@@ -4,7 +4,9 @@ import (
 	"errors"
 	"time"
 
+	"github.com/ljfranklin/service-canary/config"
 	"github.com/ljfranklin/service-canary/runner"
+	"github.com/pivotal-golang/lager"
 )
 
 type Scheduler interface {
@@ -15,20 +17,23 @@ type Scheduler interface {
 type scheduler struct {
 	runner   runner.Runner
 	interval time.Duration
+	logger   lager.Logger
 	stopChan chan bool
 	doneChan chan bool
 }
 
-func New(runner runner.Runner, interval time.Duration) Scheduler {
+func New(runner runner.Runner, config *config.Config) Scheduler {
 	return &scheduler{
 		runner:   runner,
-		interval: interval,
+		interval: config.Interval,
+		logger:   config.Logger,
 		stopChan: make(chan bool),
 		doneChan: make(chan bool),
 	}
 }
 
 func (s *scheduler) RunInBackground() error {
+	s.logger.Info("Running in background...")
 
 	// loop in background until stopChan is closed
 	go func() {
@@ -38,7 +43,12 @@ func (s *scheduler) RunInBackground() error {
 				close(s.doneChan)
 				return
 			case <-time.After(s.interval):
-				s.runner.Run()
+				err := s.runner.Run()
+				if err != nil {
+					s.logger.Error("Error running command", err)
+				} else {
+					s.logger.Info("Successfully ran command")
+				}
 			}
 		}
 	}()
@@ -47,14 +57,18 @@ func (s *scheduler) RunInBackground() error {
 }
 
 func (s *scheduler) Stop() error {
+	s.logger.Info("Stopping scheduler...")
 
 	close(s.stopChan)
 
 	timeout := 1 * time.Second
 	select {
 	case <-s.doneChan:
+		s.logger.Info("Successfully stopped scheduler")
 		return nil
 	case <-time.After(timeout):
-		return errors.New("Failed to stop task after 1 second")
+		err := errors.New("Failed to stop task after 1 second")
+		s.logger.Error("Failed to stop scheduler", err)
+		return err
 	}
 }
