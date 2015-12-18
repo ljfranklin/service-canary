@@ -7,6 +7,11 @@
 			"Rev": "f28b321dda1184e439717f60b9265103c3cc5537"
 		},
 		{
+			"ImportPath": "github.com/go-sql-driver/mysql",
+			"Comment": "v1.2-125-gd512f20",
+			"Rev": "d512f204a577a4ab037a1816604c48c9c13210be"
+		},
+		{
 			"ImportPath": "github.com/pivotal-golang/lager",
 			"Rev": "95b2ada4cdf781bdcf07e5207879e034ac8c5314"
 		}
