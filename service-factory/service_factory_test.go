@@ -19,7 +19,7 @@ var _ = Describe("ServiceManager", func() {
 				Services: []configPkg.ServiceConfig{
 					configPkg.ServiceConfig{
 						Name: "my-test-db",
-						Type: "mysql",
+						Type: "p-mysql",
 					},
 				},
 			}

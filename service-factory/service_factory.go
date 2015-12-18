@@ -29,7 +29,7 @@ func (f *serviceFactory) GetAllServices() ([]adapters.Adapter, error) {
 	services := []adapters.Adapter{}
 	for _, serviceConfig := range f.config.Services {
 		switch serviceConfig.Type {
-		case "mysql":
+		case "p-mysql":
 			adapter := adapters.NewMysqlAdapter(serviceConfig.Name, f.config)
 			services = append(services, adapter)
 		default:
