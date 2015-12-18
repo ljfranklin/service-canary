@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eu
+
+MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$( cd "${MY_DIR}/.." && pwd )"
+
+ginkgo -r -p -randomizeAllSpecs "${PROJECT_DIR}"
