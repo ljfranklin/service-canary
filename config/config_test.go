@@ -10,6 +10,15 @@ import (
 
 var _ = Describe("Config", func() {
 
+	const configJson = `
+{
+  "p-mysql": [
+    {
+			"name": "my-mysql-db"
+    }
+  ]
+}`
+
 	Describe("Validate", func() {
 
 		Context("when all env variable are present", func() {
@@ -17,14 +26,7 @@ var _ = Describe("Config", func() {
 			BeforeEach(func() {
 				os.Setenv("RUN_INTERVAL", "10")
 				os.Setenv("PORT", "8081")
-				os.Setenv("VCAP_SERVICES", `
-{
-  "p-mysql": [
-    {
-			"name": "my-mysql-db"
-    }
-  ]
-}`)
+				os.Setenv("VCAP_SERVICES", configJson)
 			})
 
 			AfterEach(func() {
@@ -57,20 +59,14 @@ var _ = Describe("Config", func() {
 
 	Describe("Services", func() {
 		It("parses VCAP_SERVICES into structs", func() {
-			os.Setenv("VCAP_SERVICES", `
-{
-  "p-mysql": [
-    {
-			"name": "my-mysql-db"
-    }
-  ]
-}`)
+			os.Setenv("VCAP_SERVICES", configJson)
 
 			config := configPkg.New()
 			Expect(config.Services).To(Equal([]configPkg.ServiceConfig{
 				configPkg.ServiceConfig{
-					Name: "my-mysql-db",
-					Type: "p-mysql",
+					Name:       "my-mysql-db",
+					Type:       "p-mysql",
+					ConfigJSON: []byte(`{"name":"my-mysql-db"}`),
 				},
 			}))
 		})

@@ -30,7 +30,7 @@ func (f *serviceFactory) GetAllServices() ([]adapters.Adapter, error) {
 	for _, serviceConfig := range f.config.Services {
 		switch serviceConfig.Type {
 		case "p-mysql":
-			adapter := adapters.NewMysqlAdapter(serviceConfig.Name, f.config)
+			adapter := adapters.NewMysqlAdapter(&serviceConfig, f.logger)
 			services = append(services, adapter)
 		default:
 			err := fmt.Errorf("Unknown service type '%s'", serviceConfig.Type)

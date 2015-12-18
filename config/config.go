@@ -22,8 +22,9 @@ type Config struct {
 }
 
 type ServiceConfig struct {
-	Name string
-	Type string
+	Name       string
+	Type       string
+	ConfigJSON []byte
 }
 
 type serviceJson struct {
@@ -58,9 +59,11 @@ func New() *Config {
 			servicesInType := v
 
 			for _, serviceProperties := range servicesInType {
+				configJson, _ := json.Marshal(serviceProperties)
 				newService := ServiceConfig{
-					Name: serviceProperties["name"].(string),
-					Type: serviceType,
+					Name:       serviceProperties["name"].(string),
+					Type:       serviceType,
+					ConfigJSON: configJson,
 				}
 				cnf.Services = append(cnf.Services, newService)
 			}
