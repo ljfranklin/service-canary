@@ -4,20 +4,14 @@ package fakes
 import (
 	"sync"
 
-	"github.com/ljfranklin/service-canary/service-factory"
+	"github.com/ljfranklin/service-canary/adapters"
 )
 
-type FakeService struct {
+type FakeAdapter struct {
 	NameStub        func() string
 	nameMutex       sync.RWMutex
 	nameArgsForCall []struct{}
 	nameReturns struct {
-		result1 string
-	}
-	TypeStub        func() string
-	typeMutex       sync.RWMutex
-	typeArgsForCall []struct{}
-	typeReturns struct {
 		result1 string
 	}
 	RunStub        func() error
@@ -28,7 +22,7 @@ type FakeService struct {
 	}
 }
 
-func (fake *FakeService) Name() string {
+func (fake *FakeAdapter) Name() string {
 	fake.nameMutex.Lock()
 	fake.nameArgsForCall = append(fake.nameArgsForCall, struct{}{})
 	fake.nameMutex.Unlock()
@@ -39,44 +33,20 @@ func (fake *FakeService) Name() string {
 	}
 }
 
-func (fake *FakeService) NameCallCount() int {
+func (fake *FakeAdapter) NameCallCount() int {
 	fake.nameMutex.RLock()
 	defer fake.nameMutex.RUnlock()
 	return len(fake.nameArgsForCall)
 }
 
-func (fake *FakeService) NameReturns(result1 string) {
+func (fake *FakeAdapter) NameReturns(result1 string) {
 	fake.NameStub = nil
 	fake.nameReturns = struct {
 		result1 string
 	}{result1}
 }
 
-func (fake *FakeService) Type() string {
-	fake.typeMutex.Lock()
-	fake.typeArgsForCall = append(fake.typeArgsForCall, struct{}{})
-	fake.typeMutex.Unlock()
-	if fake.TypeStub != nil {
-		return fake.TypeStub()
-	} else {
-		return fake.typeReturns.result1
-	}
-}
-
-func (fake *FakeService) TypeCallCount() int {
-	fake.typeMutex.RLock()
-	defer fake.typeMutex.RUnlock()
-	return len(fake.typeArgsForCall)
-}
-
-func (fake *FakeService) TypeReturns(result1 string) {
-	fake.TypeStub = nil
-	fake.typeReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakeService) Run() error {
+func (fake *FakeAdapter) Run() error {
 	fake.runMutex.Lock()
 	fake.runArgsForCall = append(fake.runArgsForCall, struct{}{})
 	fake.runMutex.Unlock()
@@ -87,17 +57,17 @@ func (fake *FakeService) Run() error {
 	}
 }
 
-func (fake *FakeService) RunCallCount() int {
+func (fake *FakeAdapter) RunCallCount() int {
 	fake.runMutex.RLock()
 	defer fake.runMutex.RUnlock()
 	return len(fake.runArgsForCall)
 }
 
-func (fake *FakeService) RunReturns(result1 error) {
+func (fake *FakeAdapter) RunReturns(result1 error) {
 	fake.RunStub = nil
 	fake.runReturns = struct {
 		result1 error
 	}{result1}
 }
 
-var _ service_factory.Service = new(FakeService)
+var _ adapters.Adapter = new(FakeAdapter)

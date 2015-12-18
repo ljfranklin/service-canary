@@ -12,6 +12,12 @@ import (
 type Config struct {
 	Interval time.Duration
 	Logger   lager.Logger
+	Services []ServiceConfig
+}
+
+type ServiceConfig struct {
+	Name string
+	Type string
 }
 
 func New() *Config {

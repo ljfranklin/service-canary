@@ -4,19 +4,20 @@ package fakes
 import (
 	"sync"
 
+	"github.com/ljfranklin/service-canary/adapters"
 	"github.com/ljfranklin/service-canary/service-factory"
 )
 
 type FakeServiceFactory struct {
-	GetAllServicesStub        func() []service_factory.Service
+	GetAllServicesStub        func() []adapters.Adapter
 	getAllServicesMutex       sync.RWMutex
 	getAllServicesArgsForCall []struct{}
-	getAllServicesReturns struct {
-		result1 []service_factory.Service
+	getAllServicesReturns     struct {
+		result1 []adapters.Adapter
 	}
 }
 
-func (fake *FakeServiceFactory) GetAllServices() []service_factory.Service {
+func (fake *FakeServiceFactory) GetAllServices() []adapters.Adapter {
 	fake.getAllServicesMutex.Lock()
 	fake.getAllServicesArgsForCall = append(fake.getAllServicesArgsForCall, struct{}{})
 	fake.getAllServicesMutex.Unlock()
@@ -33,10 +34,10 @@ func (fake *FakeServiceFactory) GetAllServicesCallCount() int {
 	return len(fake.getAllServicesArgsForCall)
 }
 
-func (fake *FakeServiceFactory) GetAllServicesReturns(result1 []service_factory.Service) {
+func (fake *FakeServiceFactory) GetAllServicesReturns(result1 []adapters.Adapter) {
 	fake.GetAllServicesStub = nil
 	fake.getAllServicesReturns = struct {
-		result1 []service_factory.Service
+		result1 []adapters.Adapter
 	}{result1}
 }
 

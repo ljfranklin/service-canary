@@ -1,9 +1,10 @@
 package service_manager_test
 
 import (
+	"github.com/ljfranklin/service-canary/adapters"
+	adapterFakes "github.com/ljfranklin/service-canary/adapters/fakes"
 	configPkg "github.com/ljfranklin/service-canary/config"
-	"github.com/ljfranklin/service-canary/service-factory"
-	"github.com/ljfranklin/service-canary/service-factory/fakes"
+	factoryFakes "github.com/ljfranklin/service-canary/service-factory/fakes"
 	"github.com/ljfranklin/service-canary/service-manager"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -18,15 +19,14 @@ var _ = Describe("ServiceManager", func() {
 			Logger: lagertest.NewTestLogger("ServiceManagerTest"),
 		}
 
-		fakeService := &fakes.FakeService{}
+		fakeService := &adapterFakes.FakeAdapter{}
 		fakeService.NameReturns("my-mysql-db")
-		fakeService.TypeReturns("mysql")
 		fakeService.RunReturns(nil)
 
-		fakeServices := []service_factory.Service{
+		fakeServices := []adapters.Adapter{
 			fakeService,
 		}
-		factory := &fakes.FakeServiceFactory{}
+		factory := &factoryFakes.FakeServiceFactory{}
 		factory.GetAllServicesReturns(fakeServices)
 
 		manager := service_manager.New(factory, config)
@@ -35,7 +35,7 @@ var _ = Describe("ServiceManager", func() {
 		Expect(err).ToNot(HaveOccurred())
 
 		for _, service := range fakeServices {
-			fake := service.(*fakes.FakeService)
+			fake := service.(*adapterFakes.FakeAdapter)
 			Eventually(fake.RunCallCount).Should(Equal(1), "Expected service.Run to be called at least once")
 		}
 	})
