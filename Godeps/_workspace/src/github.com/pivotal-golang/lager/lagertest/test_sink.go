@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/ginkgo"
 	"github.com/onsi/gomega/gbytes"
 
-	"github.com/ljfranklin/service-canary/Godeps/_workspace/src/github.com/pivotal-golang/lager"
+	"github.com/pivotal-golang/lager"
 )
 
 type TestLogger struct {

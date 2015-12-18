@@ -1,0 +1,5 @@
+---
+applications:
+- name: service-canary
+  env:
+    RUN_INTERVAL: 5

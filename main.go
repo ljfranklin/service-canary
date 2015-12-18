@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/ljfranklin/service-canary/config"
 	"github.com/ljfranklin/service-canary/scheduler"
 	"github.com/ljfranklin/service-canary/service-factory"
@@ -20,11 +23,11 @@ func main() {
 
 	scheduler := scheduler.New(manager, rootConfig)
 
-	errChan := make(chan error)
-	go func() {
-		errChan <- scheduler.RunInBackground()
-	}()
+	err = scheduler.RunInBackground()
+	if err != nil {
+		rootConfig.Logger.Fatal("Failed to run scheduler", err)
+	}
 
-	err = <-errChan
-	rootConfig.Logger.Fatal("App exited unexpectedly", err)
+	// bind to PORT so CF sees the app as healthy
+	http.ListenAndServe(fmt.Sprintf(":%d", rootConfig.Port), nil)
 }

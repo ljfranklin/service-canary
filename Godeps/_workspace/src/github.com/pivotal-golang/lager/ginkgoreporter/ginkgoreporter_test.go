@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/ljfranklin/service-canary/Godeps/_workspace/src/github.com/pivotal-golang/lager"
-	"github.com/ljfranklin/service-canary/Godeps/_workspace/src/github.com/pivotal-golang/lager/chug"
-	. "github.com/ljfranklin/service-canary/Godeps/_workspace/src/github.com/pivotal-golang/lager/ginkgoreporter"
+	"github.com/pivotal-golang/lager"
+	"github.com/pivotal-golang/lager/chug"
+	. "github.com/pivotal-golang/lager/ginkgoreporter"
+
 	. "github.com/onsi/ginkgo"
 	"github.com/onsi/ginkgo/config"
 	"github.com/onsi/ginkgo/reporters"
