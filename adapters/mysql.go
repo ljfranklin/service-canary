@@ -1,15 +1,20 @@
 package adapters
 
-import "github.com/ljfranklin/service-canary/config"
+import (
+	"github.com/ljfranklin/service-canary/config"
+	"github.com/pivotal-golang/lager"
+)
 
 type MysqlAdapter struct {
 	Adapter
-	name string
+	name   string
+	logger lager.Logger
 }
 
 func NewMysqlAdapter(serviceName string, config *config.Config) *MysqlAdapter {
 	return &MysqlAdapter{
-		name: serviceName,
+		name:   serviceName,
+		logger: config.Logger,
 	}
 }
 
@@ -18,5 +23,6 @@ func (a MysqlAdapter) Name() string {
 }
 
 func (a *MysqlAdapter) Run() error {
+	a.logger.Info("Running mysql adapter...")
 	return nil
 }
