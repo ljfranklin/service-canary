@@ -9,7 +9,7 @@ import (
 )
 
 type ServiceFactory interface {
-	GetAllServices() []adapters.Adapter
+	GetAllServices() ([]adapters.Adapter, error)
 }
 
 type serviceFactory struct {
@@ -24,7 +24,7 @@ func New(config *config.Config) ServiceFactory {
 	}
 }
 
-func (f *serviceFactory) GetAllServices() []adapters.Adapter {
+func (f *serviceFactory) GetAllServices() ([]adapters.Adapter, error) {
 
 	services := []adapters.Adapter{}
 	for _, serviceConfig := range f.config.Services {
@@ -34,9 +34,9 @@ func (f *serviceFactory) GetAllServices() []adapters.Adapter {
 			services = append(services, adapter)
 		default:
 			err := fmt.Errorf("Unknown service type '%s'", serviceConfig.Type)
-			f.logger.Error("Failed to build service adapter", err)
+			return nil, err
 		}
 	}
 
-	return services
+	return services, nil
 }

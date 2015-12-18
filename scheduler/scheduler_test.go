@@ -28,6 +28,7 @@ var _ = Describe("Scheduler", func() {
 			err := scheduler.RunInBackground()
 			Expect(err).ToNot(HaveOccurred())
 
+			Eventually(runner.SetupCallCount).Should(Equal(1), "Expected Setup to be called once")
 			Eventually(runner.RunCallCount).Should(BeNumerically(">", 1), "Expected Run to be called more than once")
 
 			err = scheduler.Stop()

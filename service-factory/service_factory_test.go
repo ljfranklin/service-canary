@@ -25,7 +25,8 @@ var _ = Describe("ServiceManager", func() {
 			}
 
 			factory := service_factory.New(config)
-			factoryServices := factory.GetAllServices()
+			factoryServices, err := factory.GetAllServices()
+			Expect(err).ToNot(HaveOccurred())
 
 			Expect(factoryServices).To(HaveLen(len(config.Services)))
 

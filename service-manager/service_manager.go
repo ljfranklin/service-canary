@@ -3,14 +3,16 @@ package service_manager
 import (
 	"fmt"
 
+	"github.com/ljfranklin/service-canary/adapters"
 	"github.com/ljfranklin/service-canary/config"
 	"github.com/ljfranklin/service-canary/service-factory"
 	"github.com/pivotal-golang/lager"
 )
 
 type serviceManager struct {
-	factory service_factory.ServiceFactory
-	logger  lager.Logger
+	factory  service_factory.ServiceFactory
+	logger   lager.Logger
+	services []adapters.Adapter
 }
 
 func New(factory service_factory.ServiceFactory, config *config.Config) *serviceManager {
@@ -20,10 +22,25 @@ func New(factory service_factory.ServiceFactory, config *config.Config) *service
 	}
 }
 
-func (m *serviceManager) RunAllInBackground() error {
+func (m *serviceManager) Setup() error {
+	var err error
+	m.services, err = m.factory.GetAllServices()
 
-	services := m.factory.GetAllServices()
-	for _, service := range services {
+	if err != nil {
+		return fmt.Errorf("Failed to Setup Factory: %s", err.Error())
+	}
+
+	for _, service := range m.services {
+		err := service.Setup()
+		if err != nil {
+			return fmt.Errorf("Failed to setup '%s': %s", service.Name(), err.Error())
+		}
+	}
+	return nil
+}
+
+func (m *serviceManager) RunAllInBackground() error {
+	for _, service := range m.services {
 		go func() {
 			err := service.Run()
 			if err != nil {

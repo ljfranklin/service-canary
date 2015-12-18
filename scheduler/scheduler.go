@@ -2,6 +2,7 @@ package scheduler
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/ljfranklin/service-canary/config"
@@ -34,6 +35,11 @@ func New(runner runner.Runner, config *config.Config) Scheduler {
 
 func (s *scheduler) RunInBackground() error {
 	s.logger.Info("Running in background...")
+
+	err := s.runner.Setup()
+	if err != nil {
+		return fmt.Errorf("Failed to Setup runner: %s", err.Error())
+	}
 
 	// loop in background until stopChan is closed
 	go func() {

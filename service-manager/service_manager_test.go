@@ -27,16 +27,23 @@ var _ = Describe("ServiceManager", func() {
 			fakeService,
 		}
 		factory := &factoryFakes.FakeServiceFactory{}
-		factory.GetAllServicesReturns(fakeServices)
+		factory.GetAllServicesReturns(fakeServices, nil)
 
 		manager := service_manager.New(factory, config)
 
-		err := manager.RunAllInBackground()
+		err := manager.Setup()
+		Expect(err).ToNot(HaveOccurred())
+		for _, service := range fakeServices {
+			fake := service.(*adapterFakes.FakeAdapter)
+			Expect(fake.SetupCallCount()).To(Equal(1), "Expected service.Setup to be called once")
+		}
+
+		err = manager.RunAllInBackground()
 		Expect(err).ToNot(HaveOccurred())
 
 		for _, service := range fakeServices {
 			fake := service.(*adapterFakes.FakeAdapter)
-			Eventually(fake.RunCallCount).Should(Equal(1), "Expected service.Run to be called at least once")
+			Eventually(fake.RunCallCount).Should(Equal(1), "Expected service.Run to be called once")
 		}
 	})
 })

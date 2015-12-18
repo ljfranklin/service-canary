@@ -20,6 +20,12 @@ type FakeAdapter struct {
 	runReturns struct {
 		result1 error
 	}
+	SetupStub        func() error
+	setupMutex       sync.RWMutex
+	setupArgsForCall []struct{}
+	setupReturns struct {
+		result1 error
+	}
 }
 
 func (fake *FakeAdapter) Name() string {
@@ -66,6 +72,30 @@ func (fake *FakeAdapter) RunCallCount() int {
 func (fake *FakeAdapter) RunReturns(result1 error) {
 	fake.RunStub = nil
 	fake.runReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeAdapter) Setup() error {
+	fake.setupMutex.Lock()
+	fake.setupArgsForCall = append(fake.setupArgsForCall, struct{}{})
+	fake.setupMutex.Unlock()
+	if fake.SetupStub != nil {
+		return fake.SetupStub()
+	} else {
+		return fake.setupReturns.result1
+	}
+}
+
+func (fake *FakeAdapter) SetupCallCount() int {
+	fake.setupMutex.RLock()
+	defer fake.setupMutex.RUnlock()
+	return len(fake.setupArgsForCall)
+}
+
+func (fake *FakeAdapter) SetupReturns(result1 error) {
+	fake.SetupStub = nil
+	fake.setupReturns = struct {
 		result1 error
 	}{result1}
 }

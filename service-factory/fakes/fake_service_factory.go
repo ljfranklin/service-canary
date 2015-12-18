@@ -9,22 +9,23 @@ import (
 )
 
 type FakeServiceFactory struct {
-	GetAllServicesStub        func() []adapters.Adapter
+	GetAllServicesStub        func() ([]adapters.Adapter, error)
 	getAllServicesMutex       sync.RWMutex
 	getAllServicesArgsForCall []struct{}
-	getAllServicesReturns     struct {
+	getAllServicesReturns struct {
 		result1 []adapters.Adapter
+		result2 error
 	}
 }
 
-func (fake *FakeServiceFactory) GetAllServices() []adapters.Adapter {
+func (fake *FakeServiceFactory) GetAllServices() ([]adapters.Adapter, error) {
 	fake.getAllServicesMutex.Lock()
 	fake.getAllServicesArgsForCall = append(fake.getAllServicesArgsForCall, struct{}{})
 	fake.getAllServicesMutex.Unlock()
 	if fake.GetAllServicesStub != nil {
 		return fake.GetAllServicesStub()
 	} else {
-		return fake.getAllServicesReturns.result1
+		return fake.getAllServicesReturns.result1, fake.getAllServicesReturns.result2
 	}
 }
 
@@ -34,11 +35,12 @@ func (fake *FakeServiceFactory) GetAllServicesCallCount() int {
 	return len(fake.getAllServicesArgsForCall)
 }
 
-func (fake *FakeServiceFactory) GetAllServicesReturns(result1 []adapters.Adapter) {
+func (fake *FakeServiceFactory) GetAllServicesReturns(result1 []adapters.Adapter, result2 error) {
 	fake.GetAllServicesStub = nil
 	fake.getAllServicesReturns = struct {
 		result1 []adapters.Adapter
-	}{result1}
+		result2 error
+	}{result1, result2}
 }
 
 var _ service_factory.ServiceFactory = new(FakeServiceFactory)

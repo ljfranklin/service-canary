@@ -22,6 +22,11 @@ func (a MysqlAdapter) Name() string {
 	return a.name
 }
 
+func (a *MysqlAdapter) Setup() error {
+	a.logger.Info("Setting up mysql adapter...")
+	return nil
+}
+
 func (a *MysqlAdapter) Run() error {
 	a.logger.Info("Running mysql adapter...")
 	return nil
