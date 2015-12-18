@@ -34,3 +34,8 @@ func (m *serviceManager) RunAllInBackground() error {
 
 	return nil
 }
+
+// ensure this conforms the Runner interface
+func (m *serviceManager) Run() error {
+	return m.RunAllInBackground()
+}
