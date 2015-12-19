@@ -2,4 +2,5 @@
 applications:
 - name: service-canary
   env:
-    RUN_INTERVAL: 5
+    RUN_INTERVAL: 5 # seconds
+    DATADOG_API_KEY: YOURDATADOGKEY
