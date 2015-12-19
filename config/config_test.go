@@ -26,12 +26,14 @@ var _ = Describe("Config", func() {
 			BeforeEach(func() {
 				os.Setenv("RUN_INTERVAL", "10")
 				os.Setenv("PORT", "8081")
+				os.Setenv("DATADOG_API_KEY", "fakekey")
 				os.Setenv("VCAP_SERVICES", configJson)
 			})
 
 			AfterEach(func() {
 				os.Unsetenv("RUN_INTERVAL")
 				os.Unsetenv("PORT")
+				os.Unsetenv("DATADOG_API_KEY")
 				os.Unsetenv("VCAP_SERVICES")
 			})
 

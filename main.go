@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ljfranklin/service-canary/config"
+	"github.com/ljfranklin/service-canary/event-emitter"
 	"github.com/ljfranklin/service-canary/scheduler"
 	"github.com/ljfranklin/service-canary/service-factory"
 	"github.com/ljfranklin/service-canary/service-manager"
@@ -19,7 +20,9 @@ func main() {
 
 	factory := service_factory.New(rootConfig)
 
-	manager := service_manager.New(factory, rootConfig)
+	emitter := event_emitter.NewDataDogEmitter(rootConfig)
+
+	manager := service_manager.New(factory, emitter, rootConfig)
 
 	scheduler := scheduler.New(manager, rootConfig)
 

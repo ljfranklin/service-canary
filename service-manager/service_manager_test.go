@@ -4,6 +4,7 @@ import (
 	"github.com/ljfranklin/service-canary/adapters"
 	adapterFakes "github.com/ljfranklin/service-canary/adapters/fakes"
 	configPkg "github.com/ljfranklin/service-canary/config"
+	emitterFakes "github.com/ljfranklin/service-canary/event-emitter/fakes"
 	factoryFakes "github.com/ljfranklin/service-canary/service-factory/fakes"
 	"github.com/ljfranklin/service-canary/service-manager"
 	. "github.com/onsi/ginkgo"
@@ -29,7 +30,9 @@ var _ = Describe("ServiceManager", func() {
 		factory := &factoryFakes.FakeServiceFactory{}
 		factory.GetAllServicesReturns(fakeServices, nil)
 
-		manager := service_manager.New(factory, config)
+		emitter := &emitterFakes.FakeEmitter{}
+
+		manager := service_manager.New(factory, emitter, config)
 
 		err := manager.Setup()
 		Expect(err).ToNot(HaveOccurred())
@@ -45,5 +48,6 @@ var _ = Describe("ServiceManager", func() {
 			fake := service.(*adapterFakes.FakeAdapter)
 			Eventually(fake.RunCallCount).Should(Equal(1), "Expected service.Run to be called once")
 		}
+		Expect(emitter.EmitCallCount()).To(Equal(len(fakeServices)), "Expected emitter.Emit to be called once for each service")
 	})
 })

@@ -14,11 +14,12 @@ import (
 )
 
 type Config struct {
-	Interval time.Duration
-	Port     int
-	Logger   lager.Logger
-	Services []ServiceConfig
-	setupErr error
+	Interval      time.Duration
+	Port          int
+	DatadogApiKey string
+	Logger        lager.Logger
+	Services      []ServiceConfig
+	setupErr      error
 }
 
 type ServiceConfig struct {
@@ -70,6 +71,8 @@ func New() *Config {
 		}
 	}
 
+	cnf.DatadogApiKey = os.Getenv("DATADOG_API_KEY")
+
 	return cnf
 }
 
@@ -90,6 +93,10 @@ func (c Config) Validate() error {
 
 	if len(c.Services) == 0 {
 		errMsg += "Failed to parse any services from VCAP_SERVICES\n"
+	}
+
+	if len(c.DatadogApiKey) == 0 {
+		errMsg += "DATADOG_API_KEY was not present in environment\n"
 	}
 
 	if len(errMsg) > 0 {
