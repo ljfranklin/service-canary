@@ -30,10 +30,10 @@ func (f *serviceFactory) GetAllServices() ([]adapters.Adapter, error) {
 	for _, serviceConfig := range f.config.Services {
 		switch serviceConfig.Type {
 		case "p-mysql":
-			adapter := adapters.NewMysqlAdapter(&serviceConfig, f.logger)
+			adapter := adapters.NewMysqlAdapter(serviceConfig, f.logger)
 			services = append(services, adapter)
 		case "rediscloud":
-			adapter := adapters.NewRedisAdapter(&serviceConfig, f.logger)
+			adapter := adapters.NewRedisAdapter(serviceConfig, f.logger)
 			services = append(services, adapter)
 		default:
 			err := fmt.Errorf("Unknown service type '%s'", serviceConfig.Type)

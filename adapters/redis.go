@@ -14,7 +14,7 @@ import (
 type RedisAdapter struct {
 	logger        lager.Logger
 	name          string
-	serviceConfig *config.ServiceConfig
+	serviceConfig config.ServiceConfig
 	client        *redis.Client
 }
 
@@ -28,7 +28,7 @@ type redisCredentialsConfig struct {
 	Port     string `json:"port"`
 }
 
-func NewRedisAdapter(serviceConfig *config.ServiceConfig, logger lager.Logger) *RedisAdapter {
+func NewRedisAdapter(serviceConfig config.ServiceConfig, logger lager.Logger) *RedisAdapter {
 	return &RedisAdapter{
 		logger:        logger,
 		name:          serviceConfig.Name,

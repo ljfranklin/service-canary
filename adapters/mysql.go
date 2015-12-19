@@ -16,7 +16,7 @@ import (
 type MysqlAdapter struct {
 	Adapter
 	name             string
-	serviceConfig    *config.ServiceConfig
+	serviceConfig    config.ServiceConfig
 	connectionString string
 	logger           lager.Logger
 	db               *sql.DB
@@ -35,7 +35,7 @@ type mysqlCredentialsConfig struct {
 	DbName   string `json:"name"`
 }
 
-func NewMysqlAdapter(serviceConfig *config.ServiceConfig, logger lager.Logger) *MysqlAdapter {
+func NewMysqlAdapter(serviceConfig config.ServiceConfig, logger lager.Logger) *MysqlAdapter {
 	return &MysqlAdapter{
 		name:          serviceConfig.Name,
 		serviceConfig: serviceConfig,
