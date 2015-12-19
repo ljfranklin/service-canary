@@ -21,6 +21,10 @@ var _ = Describe("ServiceManager", func() {
 						Name: "my-test-db",
 						Type: "p-mysql",
 					},
+					configPkg.ServiceConfig{
+						Name: "my-test-redis",
+						Type: "rediscloud",
+					},
 				},
 			}
 
@@ -33,6 +37,10 @@ var _ = Describe("ServiceManager", func() {
 			mysqlService := factoryServices[0]
 			Expect(mysqlService.Name()).To(Equal("my-test-db"))
 			Expect(mysqlService).To(BeAssignableToTypeOf(&adapters.MysqlAdapter{}))
+
+			redisService := factoryServices[1]
+			Expect(redisService.Name()).To(Equal("my-test-redis"))
+			Expect(redisService).To(BeAssignableToTypeOf(&adapters.RedisAdapter{}))
 		})
 	})
 })

@@ -16,6 +16,11 @@ var _ = Describe("Config", func() {
     {
 			"name": "my-mysql-db"
     }
+  ],
+	"rediscloud": [
+    {
+			"name": "my-redis"
+    }
   ]
 }`
 
@@ -69,6 +74,11 @@ var _ = Describe("Config", func() {
 					Name:       "my-mysql-db",
 					Type:       "p-mysql",
 					ConfigJSON: []byte(`{"name":"my-mysql-db"}`),
+				},
+				configPkg.ServiceConfig{
+					Name:       "my-redis",
+					Type:       "rediscloud",
+					ConfigJSON: []byte(`{"name":"my-redis"}`),
 				},
 			}))
 		})

@@ -24,10 +24,10 @@ type MysqlAdapter struct {
 }
 
 type mysqlConfig struct {
-	Credentials credentialsConfig `json:"credentials"`
+	Credentials mysqlCredentialsConfig `json:"credentials"`
 }
 
-type credentialsConfig struct {
+type mysqlCredentialsConfig struct {
 	Hostname string `json:"hostname"`
 	Username string `json:"username"`
 	Password string `json:"password"`
